@@ -1,16 +1,24 @@
 {
-  "name": "color-space-visualizer",
+  "name": "color3d",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/color3d.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server",
+    "build": "rm -rf dist && webpack --config webpack.prod.js",
+    "prepublish": "npm run build"
   },
   "author": "afc163 <afc163@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "d3": "^4.10.0",
     "d3-hsv": "^0.1.0",
-    "three": "^0.87.1"
+    "three": "^0.87.1",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "devDependencies": {
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.5.5",
+    "webpack-merge": "^4.1.0"
   }
 }

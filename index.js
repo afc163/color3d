@@ -1,39 +1,40 @@
-import THREE from 'three';
-import 'three/js/controls/OrbitControls';
-import d3 from 'd3';
-import 'd3-hsv';
+var THREE = require('three');
+var d3 = require('d3');
+window.THREE = THREE;
+require('three/examples/js/controls/OrbitControls');
+d3.hsv = require('d3-hsv').hsv;
 
-const cubeItems = 17 + 1;
-const cubeSpace = 8;
-const cubeRatio = 4;
-const cubeSize = cubeSpace / cubeRatio;
-const margin = -cubeSpace * (cubeItems - 1) / 2;
-const colorStep = 255 / (cubeItems - 1);
-const r = colorStep * 256 * 256;
-const g = colorStep * 256;
-const b = colorStep;
+var cubeItems = 17 + 1;
+var cubeSpace = 8;
+var cubeRatio = 4;
+var cubeSize = cubeSpace / cubeRatio;
+var margin = -cubeSpace * (cubeItems - 1) / 2;
+var colorStep = 255 / (cubeItems - 1);
+var r = colorStep * 256 * 256;
+var g = colorStep * 256;
+var b = colorStep;
 
-const maxSpeed = 3;
-const maxSpeedSq = Math.pow(maxSpeed, 2);
-const meshes = null;
+var maxSpeed = 3;
+var maxSpeedSq = Math.pow(maxSpeed, 2);
+var meshes = null;
 
-const container;
+var container;
 
-const camera, controls, scene, renderer;
+var camera, controls, scene, renderer;
 
-const axisX = new THREE.Vector3(1, 0, 0);
-const axisY = new THREE.Vector3(0, 1, 0);
-const axisZ = new THREE.Vector3(0, 0, 1);
-const angleX = -Math.PI / 4;
-const angleY = -Math.PI / 4;
-const angleZ = Math.atan(Math.sqrt(2) / 2);
+var axisX = new THREE.Vector3(1, 0, 0);
+var axisY = new THREE.Vector3(0, 1, 0);
+var axisZ = new THREE.Vector3(0, 0, 1);
+var angleX = -Math.PI / 4;
+var angleY = -Math.PI / 4;
+var angleZ = Math.atan(Math.sqrt(2) / 2);
 
 function move(p, t) {
-  const distance = p.distanceToSquared(t);
-  const isTooFar = distance > maxSpeedSq;
+  var distance = p.distanceToSquared(t);
+  var isTooFar = distance > maxSpeedSq;
 
   if (isTooFar) {
-    const step = new THREE.Vector3()
+    var step = new THREE.Vector3()
     .subVectors(t, p)
     .setLength(maxSpeed);
     p.add(step);
@@ -47,12 +48,12 @@ function move(p, t) {
 function animate() {
   render();
   meshes.forEach(function (mesh) {
-    const data = mesh.userData;
+    var data = mesh.userData;
     if (data.targetReached) {
       return;
     }
-    const p = mesh.position;
-    const t = data.target;
+    var p = mesh.position;
+    var t = data.target;
 
     data.targetReached = move(p, t);
     mesh.updateMatrix();
@@ -63,7 +64,7 @@ function animate() {
 }
 
 function calcLabTarget(rgb) {
-  const lab = d3.lab(rgb);
+  var lab = d3.lab(rgb);
   return new THREE.Vector3(
     (lab.b),
     -100 + 2 * lab.l,
@@ -72,16 +73,17 @@ function calcLabTarget(rgb) {
 }
 
 function setLabTarget(mesh) {
+  console.log('lab', mesh)
   mesh.userData.targetReached = false;
   mesh.userData.target = calcLabTarget(mesh.userData.color);
 }
 
 function calcHslTarget(rgb) {
-  const hsl = d3.hsl(rgb);
+  var hsl = d3.hsl(rgb);
   if (isNaN(hsl.s)) hsl.s = 0;
   if (isNaN(hsl.h)) hsl.h = 0;
   hsl.h -= 45;
-  const rad = Math.PI * hsl.h / 180;
+  var rad = Math.PI * hsl.h / 180;
   return new THREE.Vector3(
     hsl.s * 100,
     -100 + 200 * hsl.l,
@@ -96,11 +98,11 @@ function setHslTarget(mesh) {
 }
 
 function calcHsvTarget(rgb) {
-  const hsv = d3.hsv(rgb);
+  var hsv = d3.hsv(rgb);
   if (isNaN(hsv.s)) hsv.s = 0;
   if (isNaN(hsv.h)) hsv.h = 0;
   hsv.h -= 45;
-  const rad = Math.PI * hsv.h / 180;
+  var rad = Math.PI * hsv.h / 180;
   return new THREE.Vector3(
     hsv.s * 100,
     -100 + 200 * hsv.v,
@@ -141,7 +143,8 @@ function setPosition(vector, values) {
   });
 }
 
-function init(colors, container, options) {
+export function init(colors, container, options) {
+  options = options || {};
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
   camera.position.z = 500;
   controls = new THREE.OrbitControls(camera);
@@ -149,13 +152,13 @@ function init(colors, container, options) {
   scene = new THREE.Scene();
 
   // world
-  const cube = new THREE.SphereGeometry(cubeSize);
-  const material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
+  var cube = new THREE.SphereGeometry(cubeSize);
+  var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
 
-  for (let i= 0; i < colors.length; i++) {
-    const m = material.clone();
+  for (var i= 0; i < colors.length; i++) {
+    var m = material.clone();
     m.color = new THREE.Color(colors[i]);
-    const mesh = new THREE.Mesh(cube, m);
+    var mesh = new THREE.Mesh(cube, m);
 
     mesh.userData = { color: colors[i] };
     setHsvTarget(mesh);
@@ -174,7 +177,7 @@ function init(colors, container, options) {
   // renderer
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(options.background || 0xcccccc);
+  renderer.setClearColor(options.background || 0xeeeeee);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   container.appendChild(renderer.domElement);
@@ -195,12 +198,10 @@ function render() {
 
 export function changeMode(mode) {
   switch(mode) {
-    case 'hsl': meshes.forEach(setHslTarget);
-    case 'rgb': meshes.forEach(setRgbTarget);
-    case 'lab': meshes.forEach(setLabTarget);
-    case 'hsv': meshes.forEach(setHsvTarget);
+    case 'hsl': meshes.forEach(setHslTarget); break;
+    case 'rgb': meshes.forEach(setRgbTarget); break;
+    case 'lab': meshes.forEach(setLabTarget); break;
+    case 'hsv': meshes.forEach(setHsvTarget); break;
     default: meshes.forEach(setHsvTarget);
   }
 }
-
-export default init;
