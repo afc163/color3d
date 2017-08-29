@@ -1,8 +1,8 @@
 {
   "name": "color3d",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
-  "main": "dist/color3d.min.js",
+  "main": "dist/color3d.js",
   "files": [
     "dist",
     "index.js"
