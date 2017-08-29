@@ -1,0 +1,16 @@
+{
+  "name": "color-space-visualizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "afc163 <afc163@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^4.10.0",
+    "d3-hsv": "^0.1.0",
+    "three": "^0.87.1"
+  }
+}
