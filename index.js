@@ -145,8 +145,8 @@ function setPosition(vector, values) {
 
 export function init(colors, container, options) {
   options = options || {};
-  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-  camera.position.z = 500;
+  camera = new THREE.PerspectiveCamera(50, container.offsetWidth / container.offsetHeight, 1, 10000);
+  camera.position.z = (options.position && options.position.z) || 350;
   controls = new THREE.OrbitControls(camera, container);
 
   scene = new THREE.Scene();
@@ -178,18 +178,18 @@ export function init(colors, container, options) {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setClearColor(options.background || 0xeeeeee);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
 
   container.appendChild(renderer.domElement);
 
   window.addEventListener('resize', onWindowResize, false);
   animate();
-}
 
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  function onWindowResize() {
+    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+  }
 }
 
 function render() {
