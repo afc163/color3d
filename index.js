@@ -147,7 +147,7 @@ export function init(colors, container, options) {
   options = options || {};
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
   camera.position.z = 500;
-  controls = new THREE.OrbitControls(camera);
+  controls = new THREE.OrbitControls(camera, container);
 
   scene = new THREE.Scene();
 
