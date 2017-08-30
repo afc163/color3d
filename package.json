@@ -1,6 +1,6 @@
 {
   "name": "color3d",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "",
   "main": "dist/color3d.js",
   "files": [
@@ -11,7 +11,7 @@
     "start": "webpack-dev-server --open",
     "build": "rm -rf dist && webpack --config webpack.prod.js",
     "site": "rm -rf site && webpack",
-    "prepublish": "npm run build",
+    "prepublish": "git push origin master && npm run build",
     "deploy": "npm run site && gh-pages -d site"
   },
   "author": "afc163 <afc163@gmail.com>",

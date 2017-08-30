@@ -160,7 +160,7 @@ Color3d.prototype.render = function(container) {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
   };
-  window.addEventListener('resize', this.onWindowResize, false);
+  window.addEventListener('resize', this.onWindowResize.bind(this), false);
   this.rafHandler = this.startAnimate();
   this.container = container;
 };
