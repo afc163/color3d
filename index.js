@@ -22,6 +22,8 @@ var container;
 
 var camera, controls, scene, renderer;
 
+var mode = 'hsv';
+
 var axisX = new THREE.Vector3(1, 0, 0);
 var axisY = new THREE.Vector3(0, 1, 0);
 var axisZ = new THREE.Vector3(0, 0, 1);
@@ -159,7 +161,7 @@ export function init(colors, container, options) {
     var mesh = new THREE.Mesh(cube, m);
 
     mesh.userData = { color: colors[i] };
-    setHsvTarget(mesh);
+    setMode(mesh);
 
     scene.add(mesh);
 
@@ -194,13 +196,27 @@ function render() {
   renderer.render(scene, camera);
 }
 
-export function changeMode(mode) {
+export function changeMode(m) {
+  mode = m;
+  repaint();
+}
+
+export function repaint() {
   switch(mode) {
     case 'hsl': meshes.forEach(setHslTarget); break;
     case 'rgb': meshes.forEach(setRgbTarget); break;
     case 'lab': meshes.forEach(setLabTarget); break;
     case 'hsv': meshes.forEach(setHsvTarget); break;
     default: meshes.forEach(setHsvTarget);
+  }
+}
+
+function setMode(mesh) {
+  switch(mode) {
+    case 'hsl': setHslTarget(mesh); break;
+    case 'rgb': setRgbTarget(mesh); break;
+    case 'lab': setLabTarget(mesh); break;
+    case 'hsv': setHsvTarget(mesh); break;
   }
 }
 
@@ -216,8 +232,8 @@ export function updateData(colors) {
     var mesh = new THREE.Mesh(cube, m);
 
     mesh.userData = { color: colors[i] };
-    setHsvTarget(mesh);
 
+    setMode(mesh);
     scene.add(mesh);
 
     mesh.matrixAutoUpdate = false;
@@ -227,4 +243,5 @@ export function updateData(colors) {
   meshes = scene.children.filter(function (o) {
     return o instanceof THREE.Mesh;
   });
+  repaint();
 }

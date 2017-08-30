@@ -145,3 +145,18 @@ document.getElementById('changeData').onclick = () => {
     "#520339"
   ]);
 };
+
+document.getElementById('changeData2').onclick = () => {
+  updateData([
+    "#FFF0F6",
+    "#FFD6E7",
+    "#FFADD2",
+    "#FF85C0",
+    "#F759AB",
+    "#7736D1",
+    "#5824AB",
+    "#3C1585",
+    "#250A5E",
+    "#140638",
+  ]);
+};
