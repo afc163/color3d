@@ -1,4 +1,4 @@
-import { init, changeMode, updateData } from '../index';
+import Color3d from '../index';
 
 const colors = [
   "#FFF1F0",
@@ -123,16 +123,20 @@ const colors = [
   "#520339"
 ];
 
-init(colors, document.getElementById('container'));
+const color3d = new Color3d(colors, {
+  background: '#000000'
+});
+
+color3d.render(document.getElementById('container'));
 
 document.querySelectorAll('button').forEach((button) => {
   button.onclick = () => {
-    changeMode(button.id);
+    color3d.changeSpaceMode(button.id);
   };
 });
 
 document.getElementById('changeData').onclick = () => {
-  updateData([
+  color3d.updateData([
     "#FFF0F6",
     "#FFD6E7",
     "#FFADD2",
@@ -147,7 +151,7 @@ document.getElementById('changeData').onclick = () => {
 };
 
 document.getElementById('changeData2').onclick = () => {
-  updateData([
+  color3d.updateData([
     "#FFF0F6",
     "#FFD6E7",
     "#FFADD2",
@@ -159,4 +163,8 @@ document.getElementById('changeData2').onclick = () => {
     "#250A5E",
     "#140638",
   ]);
+};
+
+document.getElementById('unmount').onclick = () => {
+  color3d.unmount();
 };

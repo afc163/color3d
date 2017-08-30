@@ -10,19 +10,9 @@ var cubeRatio = 4;
 var cubeSize = cubeSpace / cubeRatio;
 var margin = -cubeSpace * (cubeItems - 1) / 2;
 var colorStep = 255 / (cubeItems - 1);
-var r = colorStep * 256 * 256;
-var g = colorStep * 256;
-var b = colorStep;
 
 var maxSpeed = 3;
 var maxSpeedSq = Math.pow(maxSpeed, 2);
-var meshes = null;
-
-var container;
-
-var camera, controls, scene, renderer;
-
-var mode = 'hsv';
 
 var axisX = new THREE.Vector3(1, 0, 0);
 var axisY = new THREE.Vector3(0, 1, 0);
@@ -45,23 +35,6 @@ function move(p, t) {
     p.copy(t);
     return true;
   }
-}
-
-function animate() {
-  render();
-  meshes.forEach(function (mesh) {
-    var data = mesh.userData;
-    if (data.targetReached) {
-      return;
-    }
-    var p = mesh.position;
-    var t = data.target;
-
-    data.targetReached = move(p, t);
-    mesh.updateMatrix();
-  });
-  controls.update();
-  requestAnimationFrame(animate);
 }
 
 function calcLabTarget(rgb) {
@@ -143,17 +116,14 @@ function setPosition(vector, values) {
   });
 }
 
-export function init(colors, container, options) {
-  options = options || {};
-  camera = new THREE.PerspectiveCamera(50, container.offsetWidth / container.offsetHeight, 1, 10000);
-  camera.position.z = (options.position && options.position.z) || 350;
-  controls = new THREE.OrbitControls(camera, container);
-
-  scene = new THREE.Scene();
+export default function Color3d(colors, options) {
+  this.options = options || {};
+  this.scene = new THREE.Scene();
+  this.spaceMode = this.options.spaceMode || 'hsv';
 
   // world
   var cube = new THREE.SphereGeometry(cubeSize);
-  var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
+  var material = new THREE.MeshBasicMaterial({ flatShading: THREE.FlatShading });
 
   for (var i= 0; i < colors.length; i++) {
     var m = material.clone();
@@ -161,58 +131,87 @@ export function init(colors, container, options) {
     var mesh = new THREE.Mesh(cube, m);
 
     mesh.userData = { color: colors[i] };
-    setMode(mesh);
+    this.applySpaceMode(mesh);
 
-    scene.add(mesh);
+    this.scene.add(mesh);
 
     mesh.matrixAutoUpdate = false;
     setPosition(mesh.position, mesh.userData.target);
     mesh.updateMatrix();
   }
 
-  meshes = scene.children.filter(function (o) {
+  this.meshes = this.scene.children.filter(function (o) {
     return o instanceof THREE.Mesh;
   });
+}
 
-  // renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(options.background || 0xeeeeee);
-  renderer.setSize(container.offsetWidth, container.offsetHeight);
+Color3d.prototype.render = function(container) {
+  this.camera = new THREE.PerspectiveCamera(50, container.offsetWidth / container.offsetHeight, 1, 10000);
+  this.camera.position.z = (this.options.position && this.options.position.z) || 350;
+  this.controls = new THREE.OrbitControls(this.camera, container);
+  this.renderer = new THREE.WebGLRenderer({ antialias: true });
+  this.renderer.setPixelRatio(window.devicePixelRatio);
+  this.renderer.setClearColor(this.options.background || 0xeeeeee);
+  this.renderer.setSize(container.offsetWidth, container.offsetHeight);
 
-  container.appendChild(renderer.domElement);
+  container.appendChild(this.renderer.domElement);
+  this.onWindowResize = function onWindowResize() {
+    this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
+  };
+  window.addEventListener('resize', this.onWindowResize, false);
+  this.rafHandler = this.startAnimate();
+  this.container = container;
+};
 
-  window.addEventListener('resize', onWindowResize, false);
-  animate();
+Color3d.prototype.updateData = function(colors) {
+  var i = 0;
+  this.scene.children = [];
+  var cube = new THREE.SphereGeometry(cubeSize);
+  var material = new THREE.MeshBasicMaterial({ flatShading: THREE.FlatShading });
+  for (i = 0; i < colors.length; i++) {
+    var m = material.clone();
+    m.color = new THREE.Color(colors[i]);
+    var mesh = new THREE.Mesh(cube, m);
+    mesh.userData = { color: colors[i] };
+    this.applySpaceMode(mesh);
+    this.scene.add(mesh);
+    mesh.matrixAutoUpdate = false;
+    setPosition(mesh.position, mesh.userData.target);
+    mesh.updateMatrix();
+  }
+  this.meshes = this.scene.children.filter(function (o) {
+    return o instanceof THREE.Mesh;
+  });
+  this.repaint();
+};
 
-  function onWindowResize() {
-    camera.aspect = container.offsetWidth / container.offsetHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.offsetWidth, container.offsetHeight);
+Color3d.prototype.changeSpaceMode = function(mode) {
+  this.spaceMode = mode;
+  this.repaint();
+};
+
+Color3d.prototype.unmount = function() {
+  window.removeEventListener('resize', this.onWindowResize, false);
+  this.container.removeChild(this.renderer.domElement);
+  if (this.rafHandler && this.rafHandler.cancel) {
+    this.rafHandler.cancel();
   }
 }
 
-function render() {
-  renderer.render(scene, camera);
-}
-
-export function changeMode(m) {
-  mode = m;
-  repaint();
-}
-
-export function repaint() {
-  switch(mode) {
-    case 'hsl': meshes.forEach(setHslTarget); break;
-    case 'rgb': meshes.forEach(setRgbTarget); break;
-    case 'lab': meshes.forEach(setLabTarget); break;
-    case 'hsv': meshes.forEach(setHsvTarget); break;
-    default: meshes.forEach(setHsvTarget);
+Color3d.prototype.repaint = function() {
+  switch(this.spaceMode) {
+    case 'hsl': this.meshes.forEach(setHslTarget); break;
+    case 'rgb': this.meshes.forEach(setRgbTarget); break;
+    case 'lab': this.meshes.forEach(setLabTarget); break;
+    case 'hsv': this.meshes.forEach(setHsvTarget); break;
+    default: this.meshes.forEach(setHsvTarget);
   }
 }
 
-function setMode(mesh) {
-  switch(mode) {
+Color3d.prototype.applySpaceMode = function(mesh) {
+  switch(this.spaceMode) {
     case 'hsl': setHslTarget(mesh); break;
     case 'rgb': setRgbTarget(mesh); break;
     case 'lab': setLabTarget(mesh); break;
@@ -220,28 +219,22 @@ function setMode(mesh) {
   }
 }
 
-export function updateData(colors) {
-  // world
-  var i = 0;
-  scene.children = [];
-  var cube = new THREE.SphereGeometry(cubeSize);
-  var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
-  for (i = 0; i < colors.length; i++) {
-    var m = material.clone();
-    m.color = new THREE.Color(colors[i]);
-    var mesh = new THREE.Mesh(cube, m);
+Color3d.prototype.renderScene = function() {
+  this.renderer.render(this.scene, this.camera);
+}
 
-    mesh.userData = { color: colors[i] };
-
-    setMode(mesh);
-    scene.add(mesh);
-
-    mesh.matrixAutoUpdate = false;
-    setPosition(mesh.position, mesh.userData.target);
+Color3d.prototype.startAnimate = function() {
+  this.renderScene();
+  this.meshes.forEach(function (mesh) {
+    var data = mesh.userData;
+    if (data.targetReached) {
+      return;
+    }
+    var p = mesh.position;
+    var t = data.target;
+    data.targetReached = move(p, t);
     mesh.updateMatrix();
-  }
-  meshes = scene.children.filter(function (o) {
-    return o instanceof THREE.Mesh;
   });
-  repaint();
+  this.controls.update();
+  return requestAnimationFrame(this.startAnimate.bind(this));
 }
