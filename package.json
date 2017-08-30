@@ -1,6 +1,6 @@
 {
   "name": "color3d",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "dist/color3d.js",
   "files": [
@@ -8,7 +8,7 @@
     "index.js"
   ],
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --open",
     "build": "rm -rf dist && webpack --config webpack.prod.js",
     "prepublish": "npm run build"
   },

@@ -57,7 +57,6 @@ function animate() {
 
     data.targetReached = move(p, t);
     mesh.updateMatrix();
-
   });
   controls.update();
   requestAnimationFrame(animate);
@@ -73,7 +72,6 @@ function calcLabTarget(rgb) {
 }
 
 function setLabTarget(mesh) {
-  console.log('lab', mesh)
   mesh.userData.targetReached = false;
   mesh.userData.target = calcLabTarget(mesh.userData.color);
 }
@@ -204,4 +202,29 @@ export function changeMode(mode) {
     case 'hsv': meshes.forEach(setHsvTarget); break;
     default: meshes.forEach(setHsvTarget);
   }
+}
+
+export function updateData(colors) {
+  // world
+  var i = 0;
+  scene.children = [];
+  var cube = new THREE.SphereGeometry(cubeSize);
+  var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading});
+  for (i = 0; i < colors.length; i++) {
+    var m = material.clone();
+    m.color = new THREE.Color(colors[i]);
+    var mesh = new THREE.Mesh(cube, m);
+
+    mesh.userData = { color: colors[i] };
+    setHsvTarget(mesh);
+
+    scene.add(mesh);
+
+    mesh.matrixAutoUpdate = false;
+    setPosition(mesh.position, mesh.userData.target);
+    mesh.updateMatrix();
+  }
+  meshes = scene.children.filter(function (o) {
+    return o instanceof THREE.Mesh;
+  });
 }

@@ -1,4 +1,4 @@
-import { init, changeMode } from '../index';
+import { init, changeMode, updateData } from '../index';
 
 const colors = [
   "#FFF1F0",
@@ -130,3 +130,18 @@ document.querySelectorAll('button').forEach((button) => {
     changeMode(button.id);
   };
 });
+
+document.getElementById('changeData').onclick = () => {
+  updateData([
+    "#FFF0F6",
+    "#FFD6E7",
+    "#FFADD2",
+    "#FF85C0",
+    "#F759AB",
+    "#EB2F96",
+    "#C41D7F",
+    "#9E1068",
+    "#780650",
+    "#520339"
+  ]);
+};
