@@ -15,14 +15,11 @@ module.exports = merge(common, {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+    libraryTarget: 'umd',
+    library: 'color3d',
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-      }
-    }),
+    new UglifyJSPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production'),
