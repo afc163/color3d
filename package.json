@@ -10,7 +10,7 @@
   "scripts": {
     "start": "webpack-dev-server --open",
     "build": "rm -rf dist && webpack --config webpack.prod.js",
-    "site": "rm -rf site && webpack --config webpack.site.js",
+    "site": "rm -rf site && webpack",
     "prepublish": "npm run build",
     "deploy": "npm run site && gh-pages -d site"
   },
