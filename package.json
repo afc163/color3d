@@ -10,7 +10,9 @@
   "scripts": {
     "start": "webpack-dev-server --open",
     "build": "rm -rf dist && webpack --config webpack.prod.js",
-    "prepublish": "npm run build"
+    "site": "rm -rf site && webpack --config webpack.site.js",
+    "prepublish": "npm run build",
+    "deploy": "npm run site && gh-pages -d site"
   },
   "author": "afc163 <afc163@gmail.com>",
   "license": "ISC",
@@ -21,6 +23,8 @@
     "webpack-dev-server": "^2.7.1"
   },
   "devDependencies": {
+    "gh-pages": "^1.0.0",
+    "html-webpack-plugin": "^2.30.1",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.5.5",
     "webpack-merge": "^4.1.0"
