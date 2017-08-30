@@ -1,6 +1,29 @@
 import Color3d from '../index';
 
-const colors = [
+const cubeItems = 18;
+const colorStep = 255 / (cubeItems - 1);
+const r = colorStep * 256 * 256;
+const g = colorStep * 256;
+const b = colorStep;
+const colors = [];
+
+for (let x = 0; x < cubeItems; x++) {
+  for (let y = 0; y < cubeItems; y++) {
+    for (let z = 0; z < cubeItems; z++) {
+      const rgbInt = x * r + y * g + b * z;
+      const color = numberToHex(rgbInt);
+      colors.push(color);
+    }
+  }
+}
+
+function numberToHex(i) {
+  const pad = "000000";
+  const s = i.toString(16);
+  return '#' + pad.substring(0, pad.length - s.length) + s;
+}
+
+const colors2 = [
   "#FFF1F0",
   "#FFCCC7",
   "#FFA39E",
@@ -136,33 +159,11 @@ document.querySelectorAll('button').forEach((button) => {
 });
 
 document.getElementById('changeData').onclick = () => {
-  color3d.updateData([
-    "#FFF0F6",
-    "#FFD6E7",
-    "#FFADD2",
-    "#FF85C0",
-    "#F759AB",
-    "#EB2F96",
-    "#C41D7F",
-    "#9E1068",
-    "#780650",
-    "#520339"
-  ]);
+  color3d.updateData(colors2);
 };
 
-document.getElementById('changeData2').onclick = () => {
-  color3d.updateData([
-    "#FFF0F6",
-    "#FFD6E7",
-    "#FFADD2",
-    "#FF85C0",
-    "#F759AB",
-    "#7736D1",
-    "#5824AB",
-    "#3C1585",
-    "#250A5E",
-    "#140638",
-  ]);
+document.getElementById('changeDataBack').onclick = () => {
+  color3d.updateData(colors);
 };
 
 document.getElementById('unmount').onclick = () => {

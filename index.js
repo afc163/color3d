@@ -5,7 +5,7 @@ require('three/examples/js/controls/OrbitControls');
 d3.hsv = require('d3-hsv').hsv;
 
 var cubeItems = 17 + 1;
-var cubeSpace = 8;
+var cubeSpace = 7;
 var cubeRatio = 4;
 var cubeSize = cubeSpace / cubeRatio;
 var margin = -cubeSpace * (cubeItems - 1) / 2;
