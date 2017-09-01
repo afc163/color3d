@@ -2,7 +2,7 @@
 
 Display color spaces with three.js.
 
-![screen shot](https://gw.alipayobjects.com/zos/rmsportal/ehgVkoVIikMQMlNoPYXD.png)
+![screen shot](https://user-images.githubusercontent.com/507615/29872910-161eb9e0-8dc4-11e7-94f9-722770872a95.png)
 
 [Live Demo](https://afc163.github.io/color3d)
 
