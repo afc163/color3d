@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    'demo': "./example/demo.js"
+    'demo': "./example/demo.js",
+    'tool': "./example/tool.js"
   },
   devtool: 'inline-source-map',
   devServer: {
@@ -15,7 +16,16 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['demo'],
+      filename: 'index.html',
       template: 'example/index.html',
+    }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['tool'],
+      filename: 'tool.html',
+      template: 'example/tool.html',
     }),
   ],
 };

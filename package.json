@@ -33,6 +33,7 @@
   "devDependencies": {
     "gh-pages": "^1.0.0",
     "html-webpack-plugin": "^2.30.1",
+    "lodash": "^4.17.4",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.5.5",
     "webpack-merge": "^4.1.0"
