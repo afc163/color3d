@@ -3,6 +3,8 @@
   <head>
     <title>color3d</title>
     <style>
+    @import url(https://fonts.googleapis.com/css?family=Arvo:700);
+
       body {
         margin: 0 24px 24px;
         text-align: center;
@@ -16,9 +18,17 @@
       #container {
         background: #000;
       }
-      input, button, textarea {
+      input[type="color"] {
+        width: 200px;
+        height: 48px;
+        margin-right: 8px;
+        border: 0;
+        background: none;
+        outline-offset: none;
+        border-radius: 10px;
         vertical-align: middle;
-        font-size: 14px;
+        position: relative;
+        top: 2px;
       }
       #colors {
         border: 1px solid #ccc;
@@ -26,6 +36,34 @@
         width: 800px;
         margin: 16px 0;
         height: 60px;
+      }
+      button {
+        display: inline;
+        position: relative;
+        top: -0px;
+        min-width: 80px;
+        min-height: 30px;
+        padding: 10px 25px 10px 25px;
+        cursor: pointer;
+        font-family: 'Arvo',sans-serif;
+        font-weight: bold;
+        color: #fff;
+        border-radius: 5px;
+        border-style: solid;
+        border-width: 0 0 6px 0;
+        background-color: #5eb2e5;
+        border-color: #5399c3;
+        font-size: 14px;
+        outline: none;
+      }
+      button:hover {
+        top: 2px;
+        border-width: 0 0 4px 0;
+      }
+      button:active {
+        top: 8px;
+        padding-bottom: 8px;
+        border-width: 2px 0 0 0;
       }
     </style>
   </head>
