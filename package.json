@@ -28,7 +28,7 @@
     "d3": "^4.10.0",
     "d3-hsv": "^0.1.0",
     "three": "^0.87.1",
-    "webpack-dev-server": "^2.7.1"
+    "webpack-dev-server": "^3.2.1"
   },
   "devDependencies": {
     "gh-pages": "^1.0.0",
